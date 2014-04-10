@@ -116,12 +116,12 @@ namespace Forager_Tester
         }
 
 
-        public int do_insert_url(string source, string link, string type, int state)
+        public int do_insert_url(string source, string link)
         {
 
             string url = source + link;
             string domain = source.Substring(0, source.IndexOf(".edu") + 4);
-            string query = "INSERT INTO `" + url_table + "`(`url`,`domain`,`link`,`source`,`type`,`state`) VALUES('" + url + "','" + domain + "','" + link + "','" + source + "','" + type + "','" + state + "'); ";
+            string query = "INSERT INTO `" + url_table + "`(`url`,`domain`,`link`,`source`) VALUES('" + url + "','" + domain + "','" + link + "','" + source + "'); ";
             query += "SELECT last_insert_id();";
             if (this.openConnection() == true)
             {
@@ -141,6 +141,22 @@ namespace Forager_Tester
         public void do_insert_link_rel(int url_id, int dest_id)
         {
             string query = "INSERT INTO `" + link_rel_table + "`(`url_id`,`dest_id`)VALUES('" + url_id + "','" + dest_id + "'); ";
+            if (this.openConnection() == true)
+            {
+                MySqlCommand cmd_query = new MySqlCommand(query, connection);
+                cmd_query.ExecuteNonQuery();
+                this.closeConnection();
+            }
+            else
+            {
+                Console.WriteLine("Broke.....BUT YOU WERE THE CHOSEN ONE!");
+            }
+
+        }
+
+        public void do_update_url_status(int url_id, int status_code, string status_code_type, int state)
+        {
+            string query = "UPDATE `"+url_table+"` SET status_code = "+status_code+", status_code_type = '"+status_code_type+"', state = "+state+" WHERE url_id = "+url_id+";";
             if (this.openConnection() == true)
             {
                 MySqlCommand cmd_query = new MySqlCommand(query, connection);
