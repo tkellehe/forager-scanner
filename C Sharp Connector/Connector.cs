@@ -140,7 +140,7 @@ namespace Forager_Tester
 
         public void do_insert_link_rel(int url_id, int dest_id)
         {
-            string query = "INSERT INTO `" + link_rel_table + "`(`url_id`,`dest_id`)VALUES('" + url_id + "','" + dest_id + "'); ";
+            string query = "INSERT INTO `" + link_rel_table + "`(`url_id`,`dest_id`)VALUES(" + url_id + "," + dest_id + "); ";
             if (this.openConnection() == true)
             {
                 MySqlCommand cmd_query = new MySqlCommand(query, connection);
