@@ -82,7 +82,7 @@ namespace CSHARP_MAIN_CRAWLER
             //                                                                "http://localhost:8080/Forager/",
             //                                                                "page_test.html" } 
             //                                            });
-            CEO ceo = new CEO(0, 2, 20, new List<List<string>> { 
+            CEO ceo = new CEO(0, 1, 20, new List<List<string>> { 
                                                          new List<string> { "-1",
                                                                             "http://Americanyeti.com/",
                                                                             "" } 

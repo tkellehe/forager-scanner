@@ -98,7 +98,9 @@ namespace CSHARP_MAIN_CRAWLER
             total_threads = thread_count;
             this.max = max;
         }
-
+        /// <summary>
+        /// The method that initializes the threads
+        /// </summary>
         public void GO()
         {
             foreach (var i in READY_WORKERS)
