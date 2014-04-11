@@ -77,10 +77,15 @@ namespace CSHARP_MAIN_CRAWLER
             //foreach (var i in s)
             //    Console.WriteLine(i);
             //Console.ReadLine();
-            CEO ceo = new CEO(1, new List<List<string>> { 
+            //CEO ceo = new CEO(0, 4, 4, new List<List<string>> { 
+            //                                             new List<string> { "-1",
+            //                                                                "http://localhost:8080/Forager/",
+            //                                                                "page_test.html" } 
+            //                                            });
+            CEO ceo = new CEO(0, 2, 20, new List<List<string>> { 
                                                          new List<string> { "-1",
-                                                                            "http://localhost:8080/Forager/",
-                                                                            "page_test.html" } 
+                                                                            "http://Americanyeti.com/",
+                                                                            "" } 
                                                         });
             ceo.GO();
             Console.ReadLine();

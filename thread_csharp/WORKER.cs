@@ -70,14 +70,13 @@ namespace CSHARP_MAIN_CRAWLER
         /// <summary>
         /// Dump all of the work that has been logged by this worker.
         /// </summary>
-        public List<List<string>> DUMP
+        public List<List<string>> DUMP()
         {
-            get
-            {
-                List<List<string>> r = work_log;
-                work_log.Clear();
-                return r;
-            }
+            List<List<string>> r = new List<List<string>>();
+            foreach (var v in work_log)
+                r.Add(v);
+            work_log.Clear();
+            return r;
         }
 
         /// <summary>
@@ -106,7 +105,8 @@ namespace CSHARP_MAIN_CRAWLER
         public void SLEEP()
         {
             //clean work
-            work.Clear();
+            if (work != null)
+                work.Clear();
 
             //assign prevtype to what the current type is
             prevtype = type;
@@ -121,7 +121,7 @@ namespace CSHARP_MAIN_CRAWLER
                 //make fall asleep
                 Thread.Sleep(Timeout.Infinite);
             }
-            catch (ThreadInterruptedException e) { } 
+            catch (ThreadInterruptedException e) { }
         }
         #endregion
 
@@ -131,8 +131,7 @@ namespace CSHARP_MAIN_CRAWLER
         /// </summary>
         public void GO()
         {
-            WORKER w = this;
-            thread = new Thread(DO_WORK);
+            thread = new Thread(() => DO_WORK(ref work_log));
             thread.Start();
         }
         /// <summary>
@@ -145,62 +144,65 @@ namespace CSHARP_MAIN_CRAWLER
         /// <summary>
         /// The method that the thread calls to do the work given.
         /// </summary>
-        public void DO_WORK()
+        public void DO_WORK(ref List<List<string>> work_log)
         {
-            while(true)
+            while (true)
             {
                 //fall asleep
                 SLEEP();
-
-                //see what type I am
-                if (type == "scan")
+                if (work != null && work.Count > 0)
                 {
-                    // run scan on work
-                    var data_collected = DO_COMBINATION_OF_GETS(work[1] + work[2]);
-                    //process what was found then log it
-                    foreach(var i in data_collected)
+                    //see what type I am
+                    if (type == "scan")
                     {
-                        string source = work[1];
-                        string link = i;
+                        // run scan on work
+                        var data_collected = DO_COMBINATION_OF_GETS(work[1] + work[2]);
+                        //process what was found then log it
+                        foreach (var i in data_collected)
+                            if (!i.Contains('#'))//Make sure not some relative jump
+                            {
+                                string source = work[1];
+                                string link = i;
 
-                        //if http:// is in i, then we must extract the begining from i...
-                        if(i.Contains("://"))
-                        {
-                            string[] s = EXTRACT_SOURCE_AND_LINK(i);
-                            source = s[0];
-                            link = s[1];
-                        }
+                                //if :// is in i, then we must extract the begining from i...
+                                if (i.Contains("://"))
+                                {
+                                    string[] s = EXTRACT_SOURCE_AND_LINK(i);
+                                    source = s[0];
+                                    link = s[1];
+                                }
 
-                        work_log.Add(new List<string> { work[0], source, link });
+                                work_log.Add(new List<string> { work[0], source, link });
+                            }
                     }
-                }
-                else if (type == "move")
-                {
-                    //take work and push it towards the database
-                    //if already exists:
-                    //push towards url_link table
-                    //if not:
-                    //collect new ID and push it towads test
-                    int ID = 0;
-                    if (ID == -1)
-                    { /*update link_url table*/}
-                    else
-                        work_log.Add(new List<string> { ID + "", work[1], work[2] });
-                }
-                else if (type == "test")
-                {
-                    //take work and run test
-                    string[] s = TEST_URL(work[1] + work[2]);
-                    //take and log for update
-                    work_log.Add(new List<string> { work[0], work[1], work[2], s[0], s[1], s[2], s[3] });
-                }
-                else
-                {
-                    //use the ID to move the new data found from test
-                    //to update the url table
-                    //if a link and a good file log for scanning
-                    if (work[5] == "1" && work[6] == "1")
-                        work_log.Add(new List<string> { work[0], work[1], work[2] });
+                    else if (type == "move")
+                    {
+                        //take work and push it towards the database
+                        //if already exists:
+                        //push towards url_link table
+                        //if not:
+                        //collect new ID and push it towads test
+                        int ID = 0;
+                        if (ID == -1)
+                        { /*update link_url table*/}
+                        else
+                            work_log.Add(new List<string> { ID + "", work[1], work[2] });
+                    }
+                    else if (type == "test")
+                    {
+                        //take work and run test
+                        string[] s = TEST_URL(work[1] + work[2]);
+                        //take and log for update
+                        work_log.Add(new List<string> { work[0], work[1], work[2], s[0], s[1], s[2], s[3] });
+                    }
+                    else if(type == "update")
+                    {
+                        //use the ID to move the new data found from test
+                        //to update the url table
+                        //if a link and a good file log for scanning
+                        if (work[5] == "1" && work[6] == "1")
+                            work_log.Add(new List<string> { work[0], work[1], work[2] });
+                    }
                 }
             }
         }
@@ -216,8 +218,7 @@ namespace CSHARP_MAIN_CRAWLER
         {
             int last_slash = url.LastIndexOf('/');
             int source_length = last_slash + 1;
-
-            return new string[] { url.Substring(0, source_length), url.Substring(last_slash + 1) };
+            return new string[] { url.Substring(0, source_length),   url.Substring(last_slash + 1, url.Length - source_length)};
         }
         /// <summary>
         /// Combines GET_CONTENTS and GET_FROM_CONTENTS in order to only have to worry about one function.
@@ -227,10 +228,7 @@ namespace CSHARP_MAIN_CRAWLER
         public List<string> DO_COMBINATION_OF_GETS(string url)
         {
             var l = GET_FROM_CONTENTS(GET_CONTENTS(url), searches_in_webpages);
-            List<string> r = new List<string>();
-            foreach (var i in l)
-                r.Add(CUT_OUT(i));
-            return r;
+            return l;
         }
 
         /// <summary>
@@ -255,7 +253,8 @@ namespace CSHARP_MAIN_CRAWLER
             foreach (var token in c)
                 if (start == -1)
                     start = s.IndexOf(token);
-            return s.Substring(start + 1, s.Length - 1 - (start + 1));
+            string r = s.Substring(start + 1, s.Length - 1 - (start + 1));
+            return r;
         }
 
         public static string CUT_OUT(string s)
