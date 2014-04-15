@@ -20,10 +20,15 @@ namespace Forager_Tester
             trial.do_update_url_status(2, 200, "Connection success", 1);
             Console.ReadLine();
 
-
-            int check = trial.do_check_running();
-            Console.WriteLine("Success Check Row = " + check);
+            int newScan = trial.do_check_started();
+            Console.WriteLine("Success Row = " + newScan);
             Console.ReadLine();
+            trial.do_create_scan_tables(newScan);
+            Console.ReadLine();
+
+
+
+
 
         }//end Main
 

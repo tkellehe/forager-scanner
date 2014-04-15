@@ -85,6 +85,76 @@ namespace Forager_Tester
             }
         }
 
+
+        public int do_get_scan_id()
+        {
+            string query = "SELECT scan_id FROM `scan` WHERE is_running = 1";
+            if (this.openConnection() == true)
+            {
+                MySqlCommand cmd_query = new MySqlCommand(query, connection);
+                MySqlDataReader reader;
+                reader = cmd_query.ExecuteReader();
+                if (reader.Read())
+                {
+                    int url_id = reader.GetInt32("url_id");
+                    reader.Close();
+                    this.closeConnection();
+                    return url_id;
+                }
+                else
+                {
+                    reader.Close();
+                    this.closeConnection();
+                    return -1;
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("Broke.....BUT YOU WERE THE CHOSEN ONE!");
+                return -1;
+            }
+        }
+
+        // Will refactor into one method with multiple SQL Statements
+        // 1. Check Scan_id and set variable to id
+        // 2. Create url Table
+        // 3. Create link_rel Table
+        public void do_create_scan_tables(int scan_id)
+        {
+             url_table = "url" + scan_id;
+             link_rel_table = "link_rel" + scan_id;
+
+            string query = "CREATE TABLE IF NOT EXISTS `"+url_table+"`(";
+                   query +=  "`url_id` int(11) NOT NULL AUTO_INCREMENT,";
+                   query +=  "`url` varchar(1000) NOT NULL,";
+                   query +=  "`domain` varchar(1000) NOT NULL,";
+                   query +=  "`link` varchar(1000) NOT NULL,";
+                   query +=  "`source` varchar(1000) NOT NULL,";
+                   query +=  "`status_code` int(11) NOT NULL,";
+                   query +=  "`status_code_type` varchar(1000) NOT NULL,";
+                   query +=  "`state` tinyint(1) NOT NULL,";
+                   query +=  " PRIMARY KEY (`url_id`)";
+                   query +=  ") ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+
+                   query += "CREATE TABLE IF NOT EXISTS `" + link_rel_table + "`(";
+  		           query +=  "`url_id` int(11) NOT NULL,";
+  		           query +=  "`dest_id` int(11) NOT NULL";
+		           query +=  ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+
+            if (this.openConnection() == true)
+            {
+                MySqlCommand cmd_query = new MySqlCommand(query, connection);
+                cmd_query.ExecuteNonQuery();
+                this.closeConnection();
+            }
+            else
+            {
+                Console.WriteLine("Broke.....BUT YOU WERE THE CHOSEN ONE!");
+            }
+
+        }
+
         public int do_check_url(string source, string link)
         {
             string query = "SELECT url_id FROM `" + url_table + "` WHERE source = '" + source + "' AND link = '" + link + "' ";
@@ -170,6 +240,35 @@ namespace Forager_Tester
 
         }
 
+        public int do_check_started()
+        {
+            string query = "SELECT scan_id FROM `scan` WHERE is_started = 1 ;";
+            if (this.openConnection() == true)
+            {
+                MySqlCommand cmd_query = new MySqlCommand(query, connection);
+                MySqlDataReader reader;
+                reader = cmd_query.ExecuteReader();
+                if (reader.Read())
+                {
+                    reader.Close();
+                    this.closeConnection();
+                    return 1;
+                }
+                else
+                {
+                    reader.Close();
+                    this.closeConnection();
+                    return 0;
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("Broke.....BUT YOU WERE THE CHOSEN ONE!");
+                return -1;
+            }
+        }
+
         public int do_check_running()
         {
             string query = "SELECT scan_id FROM `scan` WHERE is_running = 1 ;";
@@ -198,6 +297,7 @@ namespace Forager_Tester
                 return -1;
             }
         }
+
 
     }//end Class
 }//end NameSpace
