@@ -35,12 +35,12 @@ namespace Forager_Tester
         public string link_rel_table;
 
         //Constructor
-        public Connector(int id)
+        public Connector()
         {
             init();
-            this.id = id;
-            url_table = "url"; //+id;
-            link_rel_table = "link_rel";// +id;
+            id = do_check_started();
+            url_table = "url"+id;
+            link_rel_table = "link_rel"+id;
         }
 
         //Initialize values
