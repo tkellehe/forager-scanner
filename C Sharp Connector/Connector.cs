@@ -300,9 +300,9 @@ namespace Forager_Tester
         }
 
 
-        public int do_check_running()
+        public int do_check_stop()
         {
-            string query = "SELECT scan_id FROM `scan` WHERE is_running = 1 ;";
+            string query = "SELECT * FROM `scan` WHERE scan_id = "+id+" AND is_started = 0;";
             if (this.openConnection() == true)
             {
                 MySqlCommand cmd_query = new MySqlCommand(query, connection);
