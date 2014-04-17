@@ -186,6 +186,10 @@ namespace CSHARP_MAIN_CRAWLER
                         ceo.READY_WORKERS.Add(w);
                         ceo.IDLE_WORKERS.RemoveAt(0);
                     }// CLOSES if (w != null)
+                    else
+                    {
+                        ceo.IDLE_WORKERS.RemoveAt(0);
+                    }
                     ceo.grab_working = false;
                 }
                 else
@@ -261,6 +265,10 @@ namespace CSHARP_MAIN_CRAWLER
                             work_area.Add(w);
                             ceo.READY_WORKERS.RemoveAt(0);
                         }
+                    }
+                    else
+                    {
+                        ceo.READY_WORKERS.RemoveAt(0);
                     }
                 }
                 else

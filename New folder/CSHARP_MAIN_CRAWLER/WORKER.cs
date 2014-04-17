@@ -177,7 +177,7 @@ namespace CSHARP_MAIN_CRAWLER
                         var data_collected = DO_COMBINATION_OF_GETS(work[1] + work[2]);
                         //process what was found then log it
                         foreach (var i in data_collected)
-                            if (!i.Contains('#'))//Make sure not some relative jump
+                            if (!i.Contains('#') && ( i.Contains("http://") || i.Contains("https://") ) )//Make sure not some relative jump
                             {
                                 string source = work[1];
                                 string link = i;
