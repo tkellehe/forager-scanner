@@ -1,0 +1,9 @@
+C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\bin\Debug\CSHARP_MAIN_CRAWLER.exe.config
+C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\bin\Debug\CSHARP_MAIN_CRAWLER.exe
+C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\bin\Debug\CSHARP_MAIN_CRAWLER.pdb
+C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\obj\Debug\CSHARP_MAIN_CRAWLER.csprojResolveAssemblyReference.cache
+C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\obj\Debug\CSHARP_MAIN_CRAWLER.exe
+C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\obj\Debug\CSHARP_MAIN_CRAWLER.pdb
+C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\bin\Debug\MySql.Data.dll
+C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\bin\Debug\System.Net.Http.dll
+C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\bin\Debug\System.Net.Http.xml
