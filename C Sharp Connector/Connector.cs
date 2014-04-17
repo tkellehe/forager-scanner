@@ -224,12 +224,42 @@ namespace Forager_Tester
 
         }
 
-        public void do_update_url_status(int url_id, int status_code, string status_code_type, int state)
+        public void do_update_url_status(int url_id, int status_code, string status_code_type, int state, int url_type)
         {
-            string query = "UPDATE `"+url_table+"` SET status_code = "+status_code+", status_code_type = '"+status_code_type+"', state = "+state+" WHERE url_id = "+url_id+";";
+            string query = "UPDATE `" + url_table + "` SET status_code = " + status_code + ", status_code_type = '" + status_code_type + "', state = " + state + ", url_type = " + url_type + " WHERE url_id = " + url_id + ";";
             if (this.openConnection() == true)
             {
                 MySqlCommand cmd_query = new MySqlCommand(query, connection);
+                cmd_query.ExecuteNonQuery();
+                this.closeConnection();
+            }
+            else
+            {
+                Console.WriteLine("Broke.....BUT YOU WERE THE CHOSEN ONE!");
+            }
+
+        }
+
+        public void do_scanner_stop_updates()
+        {
+            // run a query that sets is_running = 0
+            // also calculates number of errors and 
+            // number of pages scanned to update
+            // the appropriate scan row in the scan table
+            // ??? HOW DO WE KNOW WHAT WAS A PAGE AND WHAT WAS NOT ???
+
+            string error_count_query = "SET @errorVar = (SELECT COUNT(*) FROM `" + url_table + "` WHERE state = 0); ";
+            string pages_count_query = "SET @pagesVar = (SELECT COUNT(*) FROM `" + url_table + "` WHERE url_type = 0); ";
+
+            string update_query = "UPDATE `scan` ";
+            update_query +=       "SET pages_scanned = @pagesVar, number_errors = @errorVar, is_running = 0 ";
+            update_query +=       "WHERE scan_id = "+id+";";
+      
+            string compound_query = error_count_query + pages_count_query + update_query;
+
+            if (this.openConnection() == true)
+            {
+                MySqlCommand cmd_query = new MySqlCommand(compound_query, connection);
                 cmd_query.ExecuteNonQuery();
                 this.closeConnection();
             }
@@ -268,6 +298,7 @@ namespace Forager_Tester
                 return -1;
             }
         }
+
 
         public int do_check_running()
         {
