@@ -108,7 +108,13 @@ namespace CSHARP_MAIN_CRAWLER
             sleeping = false;
 
             //wake up thread
-            thread.Interrupt();
+            // ADDED 17 APRIL 2014 00:57
+            try
+            {
+                thread.Interrupt();
+            }
+            catch (ThreadInterruptedException e){ }
+            // ADDED 17 APRIL 2014 00:57 
         }
 
         /// <summary>
@@ -118,7 +124,7 @@ namespace CSHARP_MAIN_CRAWLER
         {
             //clean work
             if (work != null)
-                work.Clear();
+                work = null;
 
             //assign prevtype to what the current type is
             prevtype = type;
@@ -182,8 +188,11 @@ namespace CSHARP_MAIN_CRAWLER
                                     string[] s = EXTRACT_SOURCE_AND_LINK(i);
                                     source = s[0];
                                     link = s[1];
+                                    
+                                    
                                 }
-
+                                // Added to avoid slashes in link...magic by Justin
+                                while(   link.Length > 0 && link[0] == '/' ) link = link.Substring(1, link.Length - 1);
                                 work_log.Add(new List<string> { work[0], source, link });
                             }
                     }
@@ -194,12 +203,13 @@ namespace CSHARP_MAIN_CRAWLER
                         //push towards url_link table
                         //if not:
                         //collect new ID and push it towads test
-                        int ID = connect.do_insert_url(work[1], work[2]);
+                        int ID = connect.do_check_url(work[1], work[2]);
 
-                        if (ID != -1)
+                        if (ID == -1)
+                        {
+                            ID = connect.do_insert_url(work[1], work[2]);
                             work_log.Add(new List<string> { ID + "", work[1], work[2] });
-                        else
-                            ID = connect.do_check_url(work[1], work[2]);//Using it as get ID...
+                        }
                         //Always do an insert into link_rel
                         //Basically if the it was the first thing to be scanned(might be able to leave)
                         if (work[0] != "-1")
@@ -257,7 +267,19 @@ namespace CSHARP_MAIN_CRAWLER
         /// <returns>The code for the web page.</returns>
         public static string GET_CONTENTS(string url)
         {
-            return new System.Net.WebClient().DownloadString(url);
+            int i = 0;
+            while (i < 30)
+            {
+                try
+                {
+                    return new System.Net.WebClient().DownloadString(url);
+                }
+                catch
+                {
+                    i++;
+                }
+            }
+            return "";
         }
 
         /// <summary>
@@ -272,8 +294,15 @@ namespace CSHARP_MAIN_CRAWLER
             foreach (var token in c)
                 if (start == -1)
                     start = s.IndexOf(token);
-            string r = s.Substring(start + 1, s.Length - 1 - (start + 1));
-            return r;
+            try
+            {
+                string r = s.Substring(start + 1, s.Length - 1 - (start + 1));
+                return r;
+            }
+            catch
+            {
+                return "http://spsu.edu/";
+            }
         }
 
         public static string CUT_OUT(string s)
@@ -302,7 +331,9 @@ namespace CSHARP_MAIN_CRAWLER
 
             foreach (Match match in matches)
                 foreach (Capture capture in match.Captures)
-                    r.Add(CUT_OUT(capture.Value, new List<string> { '"' + "", "'" }));
+                    // ADDED by Justin 00:26 April 17, 2014
+                    if(capture.Value != "")
+                        r.Add(CUT_OUT(capture.Value, new List<string> { '"' + "", "'" }));
 
             return r;
         }

@@ -7,3 +7,11 @@ C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\obj\Debu
 C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\bin\Debug\MySql.Data.dll
 C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\bin\Debug\System.Net.Http.dll
 C:\Users\Mitch\Desktop\spsu\SSE\CSHARP_MAIN_CRAWLER\CSHARP_MAIN_CRAWLER\bin\Debug\System.Net.Http.xml
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Debug\CSHARP_MAIN_CRAWLER.exe.config
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\obj\Debug\CSHARP_MAIN_CRAWLER.exe
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\obj\Debug\CSHARP_MAIN_CRAWLER.pdb
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\obj\Debug\CSHARP_MAIN_CRAWLER.csprojResolveAssemblyReference.cache
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Debug\CSHARP_MAIN_CRAWLER.exe
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Debug\CSHARP_MAIN_CRAWLER.pdb
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Debug\System.Net.Http.dll
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Debug\System.Net.Http.xml

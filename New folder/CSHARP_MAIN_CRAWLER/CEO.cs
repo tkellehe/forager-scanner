@@ -98,11 +98,13 @@ namespace CSHARP_MAIN_CRAWLER
             MOVE_WORK = starting_domains;//Starts the cycle
             TEST_WORK = new List<List<string>>();
             UPDATE_WORK = new List<List<string>>();
+            connect = new Connector();
+            connect.do_create_scan_tables(connect.do_check_started());
             for (int i = 0; i < thread_count; ++i)
                 READY_WORKERS.Add(new WORKER());
             total_threads = thread_count;
             this.max = max;
-            connect = new Connector();
+            
         }
         /// <summary>
         /// The method that initializes the threads
@@ -168,14 +170,22 @@ namespace CSHARP_MAIN_CRAWLER
                             foreach (var i in data)
                             {
                                 Console.WriteLine(i[1] + i[2] + " prev type :" + prev);
-                                l.Add(i);
+                                if (prev == "update")
+                                {
+                                    if (i[1].Contains("spsu.edu"))
+                                        l.Add(i);
+                                }
+                                else
+                                {
+                                    l.Add(i);
+                                }
                                 if (prev == "scan")
                                     ++count;
                             }
                         //Add it to the ready queue
                         ceo.READY_WORKERS.Add(w);
                         ceo.IDLE_WORKERS.RemoveAt(0);
-                    }
+                    }// CLOSES if (w != null)
                     ceo.grab_working = false;
                 }
                 else

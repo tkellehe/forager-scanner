@@ -1,0 +1,8 @@
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Release\CSHARP_MAIN_CRAWLER.exe.config
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Release\CSHARP_MAIN_CRAWLER.exe
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Release\CSHARP_MAIN_CRAWLER.pdb
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Release\System.Net.Http.dll
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\bin\Release\System.Net.Http.xml
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\obj\Release\CSHARP_MAIN_CRAWLER.exe
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\obj\Release\CSHARP_MAIN_CRAWLER.pdb
+C:\Users\j\Documents\GitHub\forager-scanner\New folder\CSHARP_MAIN_CRAWLER\obj\Release\CSHARP_MAIN_CRAWLER.csprojResolveAssemblyReference.cache

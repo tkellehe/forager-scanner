@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace CSHARP_MAIN_CRAWLER
 {
-    class Connector
+    public class Connector
     {
 
         // Will have to get the scan Id number to 
@@ -125,19 +125,20 @@ namespace CSHARP_MAIN_CRAWLER
             url_table = "url" + scan_id;
             link_rel_table = "link_rel" + scan_id;
 
-            string query = "CREATE TABLE IF NOT EXISTS `" + url_table + "`(";
+            string query = "CREATE TABLE IF NOT EXISTS`" + url_table + "`(";
             query += "`url_id` int(11) NOT NULL AUTO_INCREMENT,";
             query += "`url` varchar(1000) NOT NULL,";
             query += "`domain` varchar(1000) NOT NULL,";
             query += "`link` varchar(1000) NOT NULL,";
             query += "`source` varchar(1000) NOT NULL,";
+            query += "`url_type` int(11) NOT NULL,";
             query += "`status_code` int(11) NOT NULL,";
             query += "`status_code_type` varchar(1000) NOT NULL,";
             query += "`state` tinyint(1) NOT NULL,";
             query += " PRIMARY KEY (`url_id`)";
             query += ") ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
 
-            query += "CREATE TABLE IF NOT EXISTS `" + link_rel_table + "`(";
+            query += "CREATE TABLE IF NOT EXISTS`" + link_rel_table + "`(";
             query += "`url_id` int(11) NOT NULL,";
             query += "`dest_id` int(11) NOT NULL";
             query += ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
@@ -163,6 +164,7 @@ namespace CSHARP_MAIN_CRAWLER
                 MySqlCommand cmd_query = new MySqlCommand(query, connection);
                 MySqlDataReader reader;
                 reader = cmd_query.ExecuteReader();
+                // Check reader documentation April 17 JUSTIN
                 if (reader.Read())
                 {
                     int url_id = reader.GetInt32("url_id");

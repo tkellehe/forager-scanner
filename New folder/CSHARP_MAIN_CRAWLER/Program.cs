@@ -83,9 +83,9 @@ namespace CSHARP_MAIN_CRAWLER
             //                                                                "page_test.html" } 
             //                                            });
 
-            CEO ceo = new CEO(1, 4, new List<List<string>> { 
+            CEO ceo = new CEO(0, 200, new List<List<string>> { 
                                                          new List<string> { "-1",
-                                                                            "http://Americanyeti.com/",
+                                                                            "http://www.spsu.edu/",
                                                                             "" } 
                                                         });
             ceo.GO();
