@@ -363,11 +363,13 @@ namespace CSHARP_MAIN_CRAWLER
                 //Close connections
                 httpRes.Close();
 
-                //get the actual number
+                //get the status code
                 i = (int)httpRes.StatusCode;
 
+                //get the status code name
                 s = httpRes.StatusCode.ToString();
 
+                //Get whether or not it is a file or page
                 r = httpRes.ContentType.Contains("html") ? "1" : "0";
             }
             catch (Exception e) { }
