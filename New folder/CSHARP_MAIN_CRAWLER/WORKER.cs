@@ -123,8 +123,7 @@ namespace CSHARP_MAIN_CRAWLER
         public void SLEEP()
         {
             //clean work
-            if (work != null)
-                work = null;
+            work = null;
 
             //assign prevtype to what the current type is
             prevtype = type;
@@ -177,7 +176,7 @@ namespace CSHARP_MAIN_CRAWLER
                         var data_collected = DO_COMBINATION_OF_GETS(work[1] + work[2]);
                         //process what was found then log it
                         foreach (var i in data_collected)
-                            if (!i.Contains('#') && ( i.Contains("http://") || i.Contains("https://") ) )//Make sure not some relative jump
+                            if (!i.Contains('#') && ( i.Contains("http://") || i.Contains("https://") ) )
                             {
                                 string source = work[1];
                                 string link = i;
@@ -198,20 +197,18 @@ namespace CSHARP_MAIN_CRAWLER
                     }
                     else if (type == "move")
                     {
-                        //take work and push it towards the database
-                        //if already exists:
-                        //push towards url_link table
-                        //if not:
-                        //collect new ID and push it towads test
+                        //Check to see if already in the database
                         int ID = connect.do_check_url(work[1], work[2]);
 
+                        //If not in the database do an insert and send it to be tested
                         if (ID == -1)
                         {
                             ID = connect.do_insert_url(work[1], work[2]);
                             work_log.Add(new List<string> { ID + "", work[1], work[2] });
                         }
+
                         //Always do an insert into link_rel
-                        //Basically if the it was the first thing to be scanned(might be able to leave)
+                        //Basically if the work was the first thing to be scanned
                         if (work[0] != "-1")
                             connect.do_insert_link_rel(ID, Int32.Parse(work[0]));
                     }
@@ -229,6 +226,7 @@ namespace CSHARP_MAIN_CRAWLER
                         //if a link and a good file log for scanning
                         connect.do_update_url_status(Int32.Parse(work[0]), Int32.Parse(work[4]), work[3], Int32.Parse(work[6]), Int32.Parse(work[5]));
 
+                        //If it is a good url and it is a web page create more work
                         if (work[5] == "1" && work[6] == "1")
                             work_log.Add(new List<string> { work[0], work[1], work[2] });
                     }
@@ -253,7 +251,7 @@ namespace CSHARP_MAIN_CRAWLER
         /// Combines GET_CONTENTS and GET_FROM_CONTENTS in order to only have to worry about one function.
         /// </summary>
         /// <param name="url">The url to apply everything to.</param>
-        /// <returns></returns>
+        /// <returns>All of the searches found on the url.</returns>
         public List<string> DO_COMBINATION_OF_GETS(string url)
         {
             var l = GET_FROM_CONTENTS(GET_CONTENTS(url), searches_in_webpages);
@@ -315,7 +313,7 @@ namespace CSHARP_MAIN_CRAWLER
         /// </summary>
         /// <param name="input">The input (what you want to search through)</param>
         /// <param name="searches">Holds all of the attributes and the token associated with that.</param>
-        /// <returns></returns>
+        /// <returns>All of the searches found in the input string.</returns>
         public static List<string> GET_FROM_CONTENTS(string input, List<string[]> searches)
         {
             //string s = @"(?:href\s*[=]|src\s*[=]|img\s*[=]|include\s*[(])\s*[\" + '"' + "\'](?<Link>.*?)[\"\']";
@@ -352,12 +350,14 @@ namespace CSHARP_MAIN_CRAWLER
         {
             HttpWebRequest httpReq = (HttpWebRequest)WebRequest.Create(url);
             httpReq.AllowAutoRedirect = false;
+            httpReq.Method = "HEAD";
 
             int i = 400;
             string s = "BadRequest";
             string r = "0";
             try
             {
+                //The data from the request sent
                 HttpWebResponse httpRes = (HttpWebResponse)httpReq.GetResponse();
 
                 //Close connections

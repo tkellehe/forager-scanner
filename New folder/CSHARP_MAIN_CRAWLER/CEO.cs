@@ -40,16 +40,6 @@ namespace CSHARP_MAIN_CRAWLER
         private bool stopped = false;
 
         /// <summary>
-        /// Tells whether or not the thread grab_data is working.
-        /// </summary>
-        public bool grab_working = false;
-
-        /// <summary>
-        /// Tells whether or not the thread find_idle is working.
-        /// </summary>
-        public bool find_working = false;
-
-        /// <summary>
         /// The amount of workers/threads that this ceo is in charge of.
         /// </summary>
         public int total_threads;
@@ -133,7 +123,6 @@ namespace CSHARP_MAIN_CRAWLER
             while (true)
             {
                 //Make where all db interaction happens here (might be easy...)
-                ceo.grab_working = true;
                 if(!stopped)
                 {
                     //get from db
@@ -155,49 +144,44 @@ namespace CSHARP_MAIN_CRAWLER
                         //dump the data
                         var data = w.DUMP();
 
-                        //check to see if stopped
-                        //if stopped block flow to scan from update
-                        //also block if outside of domain
-
                         //grab the correct work to dump data into
                         var l = prev == "scan" ? ceo.MOVE_WORK :
                                 prev == "move" ? ceo.TEST_WORK :
                                 prev == "test" ? ceo.UPDATE_WORK :
                                 ceo.SCAN_WORK;
 
-                        if(!(stopped && prev == "update"))
+                        //if not stopped and work is not to be scanned--
+                        if(!(stopped && (prev == "update" || prev == "move")))
                             //move data to the correct work
                             foreach (var i in data)
                             {
+                                //Make actual output of what work was just done
                                 Console.WriteLine(i[1] + i[2] + " prev type :" + prev);
                                 if (prev == "update")
                                 {
+                                    //Domain restriction
                                     if (i[1].Contains("spsu.edu"))
                                         l.Add(i);
                                 }
                                 else
-                                {
                                     l.Add(i);
-                                }
+
+                                //Increment count of how many workers worked on scanning
                                 if (prev == "scan")
                                     ++count;
                             }
+
                         //Add it to the ready queue
                         ceo.READY_WORKERS.Add(w);
                         ceo.IDLE_WORKERS.RemoveAt(0);
+
                     }// CLOSES if (w != null)
                     else
-                    {
-                        ceo.IDLE_WORKERS.RemoveAt(0);
-                    }
-                    ceo.grab_working = false;
+                        ceo.IDLE_WORKERS.RemoveAt(0);//Pop off if null
                 }
                 else
-                {
-                    ceo.grab_working = false;
                     //If there are no idle threads then fall asleep for .1 seconds
                     Thread.Sleep(10);
-                }
             }
         }
         #endregion
@@ -217,10 +201,14 @@ namespace CSHARP_MAIN_CRAWLER
                     if (w != null)
                     {
                         //calculate ratios
-                        int a = ceo.SCAN_WORK.Count / (ceo.SCAN_COUNT + 1);
-                        int b = ceo.MOVE_WORK.Count / (ceo.MOVE_COUNT + 1);
-                        int c = ceo.TEST_WORK.Count / (ceo.TEST_COUNT + 1);
-                        int d = ceo.UPDATE_WORK.Count / (ceo.UPDATE_COUNT + 1);
+                            //Multipliers added to increase that particular
+                            //type of work to be done
+                            //All already 1/4 of the whole so needed to multiply the multiplier
+                            //by four
+                        double a = .4 * ceo.SCAN_WORK.Count / (ceo.SCAN_COUNT + 1);//10%
+                        double b = .8 * ceo.MOVE_WORK.Count / (ceo.MOVE_COUNT + 1);//20%
+                        double c = 1.6 * ceo.TEST_WORK.Count / (ceo.TEST_COUNT + 1);//40%
+                        double d = 1.2 * ceo.UPDATE_WORK.Count / (ceo.UPDATE_COUNT + 1);//30%
 
                         //The work to be taken away from
                         var work = ceo.SCAN_WORK;
@@ -267,9 +255,7 @@ namespace CSHARP_MAIN_CRAWLER
                         }
                     }
                     else
-                    {
-                        ceo.READY_WORKERS.RemoveAt(0);
-                    }
+                        ceo.READY_WORKERS.RemoveAt(0);//Remove Null
                 }
                 else
                     //if no one is ready then fall asleep for .1 seconds
@@ -280,9 +266,7 @@ namespace CSHARP_MAIN_CRAWLER
                        ceo.SCAN_WORK.Count == 0 &&
                        ceo.MOVE_WORK.Count == 0 &&
                        ceo.TEST_WORK.Count == 0 &&
-                       ceo.UPDATE_WORK.Count == 0/* &&
-                       !ceo.grab_working &&
-                       !ceo.find_working*/;
+                       ceo.UPDATE_WORK.Count == 0;
             }
 
             //kill other threads
@@ -296,6 +280,7 @@ namespace CSHARP_MAIN_CRAWLER
             //talk to db to say done
             Console.WriteLine("\nNUMBER: " + count + "\ndone!!!");
 
+            //Tell database we have finished some work here
             ceo.connect.do_scanner_stop_updates();
 
             //kill self
@@ -311,7 +296,6 @@ namespace CSHARP_MAIN_CRAWLER
         {
             while(true)
             {
-                ceo.find_working = true;
                 //Make sure someone is working first
                 if (ceo.SCAN_COUNT > 0 || ceo.MOVE_COUNT > 0 || ceo.TEST_COUNT > 0 || ceo.UPDATE_COUNT > 0)
                 {
@@ -344,15 +328,10 @@ namespace CSHARP_MAIN_CRAWLER
                             ceo.IDLE_WORKERS.Add(ceo.UPDATE_WORKERS[i]);
                             ceo.UPDATE_WORKERS.RemoveAt(i);
                         }
-                    ceo.find_working = false;
                 }
                 else
-                {
-                    ceo.find_working = false;
                     //if no one is working then fall asleep for .1 seconds
                     Thread.Sleep(10);
-                }
-                
             }
         }
         #endregion

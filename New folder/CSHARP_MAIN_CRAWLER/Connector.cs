@@ -153,7 +153,6 @@ namespace CSHARP_MAIN_CRAWLER
             {
                 Console.WriteLine("Broke.....BUT YOU WERE THE CHOSEN ONE!");
             }
-
         }
 
         public int do_check_url(string source, string link)
@@ -178,7 +177,6 @@ namespace CSHARP_MAIN_CRAWLER
                     this.closeConnection();
                     return -1;
                 }
-
             }
             else
             {
@@ -269,7 +267,6 @@ namespace CSHARP_MAIN_CRAWLER
             {
                 Console.WriteLine("Broke.....BUT YOU WERE THE CHOSEN ONE!");
             }
-
         }
 
         public int do_check_started()
@@ -292,7 +289,6 @@ namespace CSHARP_MAIN_CRAWLER
                     this.closeConnection();
                     return 0;
                 }
-
             }
             else
             {
