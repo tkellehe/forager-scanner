@@ -64,6 +64,11 @@ namespace CSHARP_MAIN_CRAWLER
         /// The object used to connect to the database.
         /// </summary>
         public Connector connect;
+
+        /// <summary>
+        /// A enumerated type to indicate the type of work a worker is doing.
+        /// </summary>
+        public static enum WORK_TYPE {scan, move, test, update, idle }
         #endregion
 
         #region Constructors
@@ -145,19 +150,19 @@ namespace CSHARP_MAIN_CRAWLER
                         var data = w.DUMP();
 
                         //grab the correct work to dump data into
-                        var l = prev == "scan" ? ceo.MOVE_WORK :
-                                prev == "move" ? ceo.TEST_WORK :
-                                prev == "test" ? ceo.UPDATE_WORK :
+                        var l = prev == CEO.WORK_TYPE.scan ? ceo.MOVE_WORK :
+                                prev == CEO.WORK_TYPE.move ? ceo.TEST_WORK :
+                                prev == CEO.WORK_TYPE.test ? ceo.UPDATE_WORK :
                                 ceo.SCAN_WORK;
 
                         //if not stopped and work is not to be scanned--
-                        if(!(stopped && (prev == "update" || prev == "move")))
+                        if (!(stopped && (prev == CEO.WORK_TYPE.update || prev == CEO.WORK_TYPE.move)))
                             //move data to the correct work
                             foreach (var i in data)
                             {
                                 //Make actual output of what work was just done
                                 Console.WriteLine(i[1] + i[2] + " prev type :" + prev);
-                                if (prev == "update")
+                                if (prev == CEO.WORK_TYPE.update)
                                 {
                                     //Domain restriction
                                     if (i[1].Contains("spsu.edu"))
@@ -167,7 +172,7 @@ namespace CSHARP_MAIN_CRAWLER
                                     l.Add(i);
 
                                 //Increment count of how many workers worked on scanning
-                                if (prev == "scan")
+                                if (prev == CEO.WORK_TYPE.scan)
                                     ++count;
                             }
 
@@ -217,7 +222,7 @@ namespace CSHARP_MAIN_CRAWLER
                         var work_area = ceo.SCAN_WORKERS;
 
                         //type of work
-                        string type = "scan";
+                        WORK_TYPE type = WORK_TYPE.scan;
 
                         //find who is the largest
                         if (a < b)
@@ -225,21 +230,21 @@ namespace CSHARP_MAIN_CRAWLER
                             a = b;
                             work = ceo.MOVE_WORK;
                             work_area = ceo.MOVE_WORKERS;
-                            type = "move";
+                            type = WORK_TYPE.move;
                         }
                         if (a < c)
                         {
                             a = c;
                             work = ceo.TEST_WORK;
                             work_area = ceo.TEST_WORKERS;
-                            type = "test";
+                            type = WORK_TYPE.test;
                         }
                         if (a < d)
                         {
                             a = d;
                             work = ceo.UPDATE_WORK;
                             work_area = ceo.UPDATE_WORKERS;
-                            type = "update";
+                            type = WORK_TYPE.update;
                         }
 
                         if (a != 0)

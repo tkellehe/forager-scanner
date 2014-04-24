@@ -45,12 +45,12 @@ namespace CSHARP_MAIN_CRAWLER
         /// <summary>
         /// The type the work is.
         /// </summary>
-        public string type = "idle";
+        public CEO.WORK_TYPE type = CEO.WORK_TYPE.idle;
 
         /// <summary>
         /// The type the work was.
         /// </summary>
-        public string prevtype = "idle";
+        public CEO.WORK_TYPE prevtype = CEO.WORK_TYPE.idle;
 
         /// <summary>
         /// The attributes the scanner workers are interested in
@@ -96,7 +96,7 @@ namespace CSHARP_MAIN_CRAWLER
         /// </summary>
         /// <param name="new_work">The work to be worked on by the worker.</param>
         /// <param name="type_of_work">How the worker should operate on the work.</param>
-        public void WAKE_UP(List<string> new_work, string type_of_work)
+        public void WAKE_UP(List<string> new_work, CEO.WORK_TYPE type_of_work)
         {
             //get new work
             work = new_work;
@@ -129,7 +129,7 @@ namespace CSHARP_MAIN_CRAWLER
             prevtype = type;
 
             //set the current type to idle
-            type = "idle";
+            type = CEO.WORK_TYPE.idle;
 
             //set sleeping to true
             sleeping = true;
@@ -170,7 +170,7 @@ namespace CSHARP_MAIN_CRAWLER
                 if (work != null && work.Count > 0)
                 {
                     //see what type I am
-                    if (type == "scan")
+                    if (type == CEO.WORK_TYPE.scan)
                     {
                         // run scan on work
                         var data_collected = DO_COMBINATION_OF_GETS(work[1] + work[2]);
@@ -195,7 +195,7 @@ namespace CSHARP_MAIN_CRAWLER
                                 work_log.Add(new List<string> { work[0], source, link });
                             }
                     }
-                    else if (type == "move")
+                    else if (type == CEO.WORK_TYPE.move)
                     {
                         //Check to see if already in the database
                         int ID = connect.do_check_url(work[1], work[2]);
@@ -212,14 +212,14 @@ namespace CSHARP_MAIN_CRAWLER
                         if (work[0] != "-1")
                             connect.do_insert_link_rel(ID, Int32.Parse(work[0]));
                     }
-                    else if (type == "test")
+                    else if (type == CEO.WORK_TYPE.test)
                     {
                         //take work and run test
                         string[] s = TEST_URL(work[1] + work[2]);
                         //take and log for update
                         work_log.Add(new List<string> { work[0], work[1], work[2], s[0], s[1], s[2], s[3] });
                     }
-                    else if (type == "update")
+                    else if (type == CEO.WORK_TYPE.update)
                     {
                         //use the ID to move the new data found from test
                         //to update the url table
@@ -247,6 +247,7 @@ namespace CSHARP_MAIN_CRAWLER
             int source_length = last_slash + 1;
             return new string[] { url.Substring(0, source_length),   url.Substring(last_slash + 1, url.Length - source_length)};
         }
+
         /// <summary>
         /// Combines GET_CONTENTS and GET_FROM_CONTENTS in order to only have to worry about one function.
         /// </summary>
@@ -294,12 +295,11 @@ namespace CSHARP_MAIN_CRAWLER
                     start = s.IndexOf(token);
             try
             {
-                string r = s.Substring(start + 1, s.Length - 1 - (start + 1));
-                return r;
+                return s.Substring(start + 1, s.Length - 1 - (start + 1));
             }
             catch
             {
-                return "http://spsu.edu/";
+                return "";
             }
         }
 
@@ -330,8 +330,12 @@ namespace CSHARP_MAIN_CRAWLER
             foreach (Match match in matches)
                 foreach (Capture capture in match.Captures)
                     // ADDED by Justin 00:26 April 17, 2014
-                    if(capture.Value != "")
-                        r.Add(CUT_OUT(capture.Value, new List<string> { '"' + "", "'" }));
+                    if (capture.Value != "")
+                    {
+                        string temp = CUT_OUT(capture.Value);
+                        if(temp != "")
+                            r.Add(temp);
+                    }
 
             return r;
         }
@@ -359,8 +363,8 @@ namespace CSHARP_MAIN_CRAWLER
             //causes there to be a wait of no longer than 2 seconds
             httpReq.Timeout = 2000;
 
-            int i = 400;
-            string s = "BadRequest";
+            int i = 408;
+            string s = "RequestTimeout";
             string r = "0";
             try
             {
