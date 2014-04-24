@@ -349,8 +349,15 @@ namespace CSHARP_MAIN_CRAWLER
         public static string[] TEST_URL(string url)
         {
             HttpWebRequest httpReq = (HttpWebRequest)WebRequest.Create(url);
+
+            //Set to prevent auto redirecting when a 300 status code is found.
             httpReq.AllowAutoRedirect = false;
+
+            //Possible fix for the automatic 400 status code maker...
             httpReq.Method = "HEAD";
+
+            //causes there to be a wait of no longer than 2 seconds
+            httpReq.Timeout = 2000;
 
             int i = 400;
             string s = "BadRequest";
