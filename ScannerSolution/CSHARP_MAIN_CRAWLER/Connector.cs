@@ -248,18 +248,14 @@ namespace CSHARP_MAIN_CRAWLER
             // the appropriate scan row in the scan table
             // ??? HOW DO WE KNOW WHAT WAS A PAGE AND WHAT WAS NOT ???
 
-            string error_count_query = "SET @errorVar = (SELECT COUNT(*) FROM `" + url_table + "` WHERE state = 0); ";
-            string pages_count_query = "SET @pagesVar = (SELECT COUNT(*) FROM `" + url_table + "` WHERE url_type = 0); ";
-
             string update_query = "UPDATE `scan` ";
-            update_query += "SET pages_scanned = @pagesVar, number_errors = @errorVar, is_running = 0 ";
+            update_query += "SET pages_scanned = (SELECT COUNT(*) FROM `" + url_table + "` WHERE url_type = 1) , number_errors = (SELECT COUNT(*) FROM `" + url_table + "` WHERE state = 0), is_running = 0 ";
             update_query += "WHERE scan_id = " + id + ";";
 
-            string compound_query = error_count_query + pages_count_query + update_query;
 
             if (this.openConnection() == true)
             {
-                MySqlCommand cmd_query = new MySqlCommand(compound_query, connection);
+                MySqlCommand cmd_query = new MySqlCommand(update_query, connection);
                 cmd_query.ExecuteNonQuery();
                 this.closeConnection();
             }

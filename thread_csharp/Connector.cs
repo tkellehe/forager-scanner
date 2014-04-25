@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace CSHARP_MAIN_CRAWLER
 {
-    class Connector
+    public class Connector
     {
 
         // Will have to get the scan Id number to 
@@ -125,19 +125,20 @@ namespace CSHARP_MAIN_CRAWLER
             url_table = "url" + scan_id;
             link_rel_table = "link_rel" + scan_id;
 
-            string query = "CREATE TABLE IF NOT EXISTS `" + url_table + "`(";
+            string query = "CREATE TABLE IF NOT EXISTS`" + url_table + "`(";
             query += "`url_id` int(11) NOT NULL AUTO_INCREMENT,";
             query += "`url` varchar(1000) NOT NULL,";
             query += "`domain` varchar(1000) NOT NULL,";
             query += "`link` varchar(1000) NOT NULL,";
             query += "`source` varchar(1000) NOT NULL,";
+            query += "`url_type` int(11) NOT NULL,";
             query += "`status_code` int(11) NOT NULL,";
             query += "`status_code_type` varchar(1000) NOT NULL,";
             query += "`state` tinyint(1) NOT NULL,";
             query += " PRIMARY KEY (`url_id`)";
             query += ") ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
 
-            query += "CREATE TABLE IF NOT EXISTS `" + link_rel_table + "`(";
+            query += "CREATE TABLE IF NOT EXISTS`" + link_rel_table + "`(";
             query += "`url_id` int(11) NOT NULL,";
             query += "`dest_id` int(11) NOT NULL";
             query += ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
@@ -152,7 +153,6 @@ namespace CSHARP_MAIN_CRAWLER
             {
                 Console.WriteLine("Broke.....BUT YOU WERE THE CHOSEN ONE!");
             }
-
         }
 
         public int do_check_url(string source, string link)
@@ -163,6 +163,7 @@ namespace CSHARP_MAIN_CRAWLER
                 MySqlCommand cmd_query = new MySqlCommand(query, connection);
                 MySqlDataReader reader;
                 reader = cmd_query.ExecuteReader();
+                // Check reader documentation April 17 JUSTIN
                 if (reader.Read())
                 {
                     int url_id = reader.GetInt32("url_id");
@@ -176,7 +177,6 @@ namespace CSHARP_MAIN_CRAWLER
                     this.closeConnection();
                     return -1;
                 }
-
             }
             else
             {
@@ -248,18 +248,14 @@ namespace CSHARP_MAIN_CRAWLER
             // the appropriate scan row in the scan table
             // ??? HOW DO WE KNOW WHAT WAS A PAGE AND WHAT WAS NOT ???
 
-            string error_count_query = "SET @errorVar = (SELECT COUNT(*) FROM `" + url_table + "` WHERE state = 0); ";
-            string pages_count_query = "SET @pagesVar = (SELECT COUNT(*) FROM `" + url_table + "` WHERE url_type = 0); ";
-
             string update_query = "UPDATE `scan` ";
-            update_query += "SET pages_scanned = @pagesVar, number_errors = @errorVar, is_running = 0 ";
+            update_query += "SET pages_scanned = (SELECT COUNT(*) FROM `" + url_table + "` WHERE url_type = 1) , number_errors = (SELECT COUNT(*) FROM `" + url_table + "` WHERE state = 0), is_running = 0 ";
             update_query += "WHERE scan_id = " + id + ";";
 
-            string compound_query = error_count_query + pages_count_query + update_query;
 
             if (this.openConnection() == true)
             {
-                MySqlCommand cmd_query = new MySqlCommand(compound_query, connection);
+                MySqlCommand cmd_query = new MySqlCommand(update_query, connection);
                 cmd_query.ExecuteNonQuery();
                 this.closeConnection();
             }
@@ -267,7 +263,6 @@ namespace CSHARP_MAIN_CRAWLER
             {
                 Console.WriteLine("Broke.....BUT YOU WERE THE CHOSEN ONE!");
             }
-
         }
 
         public int do_check_started()
@@ -290,7 +285,6 @@ namespace CSHARP_MAIN_CRAWLER
                     this.closeConnection();
                     return 0;
                 }
-
             }
             else
             {

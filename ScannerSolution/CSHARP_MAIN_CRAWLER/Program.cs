@@ -19,7 +19,7 @@ namespace CSHARP_MAIN_CRAWLER
             CEO ceo = new CEO(0, 100, new List<List<string>> { 
                                                          new List<string> { "-1",
                                                                             "http://www.spsu.edu/",
-                                                                            "" } 
+                                                                            "" }
                                                         });
             ceo.GO();
             //Console.ReadLine();
