@@ -361,11 +361,11 @@ namespace CSHARP_MAIN_CRAWLER
             httpReq.Method = "HEAD";
 
             //causes there to be a wait of no longer than 2 seconds
-            httpReq.Timeout = 2000;
+            httpReq.Timeout = 6000;
 
-            int i = 408;
-            string s = "RequestTimeout";
-            string r = "0";
+            int i = 404;
+            string s = "NotFound";
+            string r = "1";
             try
             {
                 //The data from the request sent
@@ -385,7 +385,7 @@ namespace CSHARP_MAIN_CRAWLER
             }
             catch (Exception e) { }
 
-            return new string[] { s, i + "", r, i < 400 ? "1" : "0" };
+            return new string[] { s, i + "", r, i < 300 ? "1" : "0" };
         }
         #endregion
     }

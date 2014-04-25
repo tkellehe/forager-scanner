@@ -68,7 +68,7 @@ namespace CSHARP_MAIN_CRAWLER
         /// <summary>
         /// A enumerated type to indicate the type of work a worker is doing.
         /// </summary>
-        public static enum WORK_TYPE {scan, move, test, update, idle }
+        public enum WORK_TYPE {scan, move, test, update, idle }
         #endregion
 
         #region Constructors
