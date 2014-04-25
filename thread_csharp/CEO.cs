@@ -69,6 +69,11 @@ namespace CSHARP_MAIN_CRAWLER
         /// A enumerated type to indicate the type of work a worker is doing.
         /// </summary>
         public enum WORK_TYPE {scan, move, test, update, idle }
+
+        /// <summary>
+        /// Tells when the ceo has officially killed itself.
+        /// </summary>
+        public bool dead = false;
         #endregion
 
         #region Constructors
@@ -287,6 +292,9 @@ namespace CSHARP_MAIN_CRAWLER
 
             //Tell database we have finished some work here
             ceo.connect.do_scanner_stop_updates();
+
+            //Set dead to true
+            ceo.dead = true;
 
             //kill self
             ceo.assign_work.Abort();

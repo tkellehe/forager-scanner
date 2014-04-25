@@ -22,7 +22,7 @@ namespace CSHARP_MAIN_CRAWLER
                                                                             "" }
                                                         });
             ceo.GO();
-            //Console.ReadLine();
+            while (!ceo.dead) ;
         }
     }
 }

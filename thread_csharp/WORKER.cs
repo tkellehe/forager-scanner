@@ -361,7 +361,7 @@ namespace CSHARP_MAIN_CRAWLER
             httpReq.Method = "HEAD";
 
             //causes there to be a wait of no longer than 2 seconds
-            httpReq.Timeout = 6000;
+            httpReq.Timeout = 2000;
 
             int i = 404;
             string s = "NotFound";
