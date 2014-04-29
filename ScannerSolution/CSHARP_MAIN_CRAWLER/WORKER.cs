@@ -299,7 +299,7 @@ namespace CSHARP_MAIN_CRAWLER
             }
             catch
             {
-                return "";
+                return "http://spsu.edu/";
             }
         }
 

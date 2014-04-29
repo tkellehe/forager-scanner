@@ -216,9 +216,9 @@ namespace CSHARP_MAIN_CRAWLER
                             //All already 1/4 of the whole so needed to multiply the multiplier
                             //by four
                         double a = .4 * ceo.SCAN_WORK.Count / (ceo.SCAN_COUNT + 1);//10%
-                        double b = .8 * ceo.MOVE_WORK.Count / (ceo.MOVE_COUNT + 1);//20%
+                        double b = (.8 * ceo.MOVE_WORK.Count / (ceo.MOVE_COUNT + 1)) * (MOVE_COUNT < 10 ? 1 : 0);//20%
                         double c = 1.6 * ceo.TEST_WORK.Count / (ceo.TEST_COUNT + 1);//40%
-                        double d = 1.2 * ceo.UPDATE_WORK.Count / (ceo.UPDATE_COUNT + 1);//30%
+                        double d = (1.2 * ceo.UPDATE_WORK.Count / (ceo.UPDATE_COUNT + 1)) * (UPDATE_COUNT < 10 ? 1 : 0);//30%
 
                         //The work to be taken away from
                         var work = ceo.SCAN_WORK;

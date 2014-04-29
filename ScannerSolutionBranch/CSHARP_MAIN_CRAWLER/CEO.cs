@@ -195,7 +195,7 @@ namespace CSHARP_MAIN_CRAWLER
                         //===========================================================================================
 
                         //if not stopped and work is not to be scanned--
-                        if (!(stopped && (prev == WORK_TYPE.update || prev == WORK_TYPE.move)))
+                        else if (!(stopped && (prev == WORK_TYPE.update || prev == WORK_TYPE.move)))
                             //move data to the correct work
                             foreach (var i in data)
                             {
